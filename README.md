@@ -1,7 +1,7 @@
 # RotaryEncoderMousewheel_ch552
 This project describes converting a ch552 based standard USB volume control to a mousewheel control. 
 
-<p align="center"><img width="700" src="https://m.media-amazon.com/images/W/BW_MEDIAX_AVIF_MEASUREMENT_1306696-T4/images/I/618LQ0KQ7FL._AC_SL1500_.jpg" alt="USB Volume Knob" /></p>
+<p align="center"><img width="500" src="https://m.media-amazon.com/images/W/BW_MEDIAX_AVIF_MEASUREMENT_1306696-T4/images/I/618LQ0KQ7FL._AC_SL1500_.jpg" alt="USB Volume Knob" /></p>
 
 The idea behind this is to use it with the Reaper DAW for universal parameter control. 
 Reaper already allows controlling it´s parameters and plugin parameters per mousewheel when hovering the mousecursor over it (needs to be enabled in preferences).
