@@ -11,7 +11,8 @@ No controller needs to be configured in Reaper, it´s plug and play.
 
 It uses a cheap USB volume control (see Amazon link below), which has a programmable ch552 microcontroller.
 The original encoder is rastered. 
-If you´re looking for an unrastered encoder replacement to solder in, you could use Bourns PEC11R-4015F-S0024
+If you´re looking for an unrastered encoder replacement to solder in, you could use Bourns PEC11R-4015F-S0024. 
+This has a 6mm axis with a flat side and takes standard potentiometer knob caps.
 
 The LED is deactivated here, but already prepared in code if you want to add your own LED behaviour.
 If you want to change the .ino sourcecode yourself, this can be done via Arduino IDE and the ch55xduino library, see the instructions on hackaday below.
