@@ -1,4 +1,4 @@
-// USB-Drehregler EC11 (CH552G) -> Mausrad hoch/runter, Knopf = Strg
+// USB rotary encoder EC11 (CH552G) -> mouse wheel up/down, button = Ctrl
 // Arduino IDE + ch55xduino
 //   Tools > Board:         CH552
 //   Tools > USB Settings:  USER CODE w/ 148B USB ram
@@ -6,23 +6,23 @@
 //   Tools > Upload method: USB
 
 #ifndef USER_USB_RAM
-#error "Tools > USB Settings auf 'USER CODE w/ 148B USB ram' stellen"
+#error "Set Tools > USB Settings to 'USER CODE w/ 148B USB ram'"
 #endif
 
-// USB-Code liegt im Sketch-Ordner (src/), kopiert aus dem Beispiel HidKeyboardMouse
+// USB code lives in the sketch folder (src/), copied from the HidKeyboardMouse example
 #include "src/userUsbHidKeyboardMouse/USBHIDKeyboardMouse.h"
 
-// Arduino-Pinnummer = Port*10 + Pin (ch55xduino)
-#define PIN_ENC_A 31   // Gehaeuse-Pin 7  = P3.1
-#define PIN_ENC_B 30   // Gehaeuse-Pin 8  = P3.0
-#define PIN_SW    33   // Gehaeuse-Pin 10 = P3.3 (Taster gegen GND)
-#define PIN_LED   34   // Gehaeuse-Pin 11 = P3.4 (LED zwischen Pin 15/VCC und Pin 11 -> LOW = an)
+// Arduino pin number = port*10 + pin (ch55xduino)
+#define PIN_ENC_A 31   // package pin 7  = P3.1
+#define PIN_ENC_B 30   // package pin 8  = P3.0
+#define PIN_SW    33   // package pin 10 = P3.3 (button to GND)
+#define PIN_LED   34   // package pin 11 = P3.4 (LED between pin 15/VCC and pin 11 -> LOW = on)
 
-// Rastungen: EC11 hat meist 4 Flanken pro Rastung (manche 2). Bei doppelten
-// oder fehlenden Schritten hier 2 bzw. 4 ausprobieren.
+// Detents: an EC11 usually has 4 edges per detent (some have 2). If steps are
+// doubled or missing, try 2 or 4 here.
 #define STEPS_PER_DETENT 4
 
-// Drehrichtung umkehren: 1 = hoch/runter vertauschen
+// Reverse rotation direction: 1 = swap up/down
 #define REVERSE_DIRECTION 0
 
 #define LED_ON  LOW
@@ -69,9 +69,9 @@ void loop() {
 #if REVERSE_DIRECTION
       dir = -dir;
 #endif
-      Mouse_scroll(dir);          // +1 = Mausrad hoch, -1 = runter
+      Mouse_scroll(dir);          // +1 = wheel up, -1 = down
       // digitalWrite(PIN_LED, LED_OFF);
-      ledOffAt = millis() + 30;   // LED blitzt kurz bei jeder Rastung
+      ledOffAt = millis() + 30;   // LED flashes briefly on every detent
     }
   }
 
@@ -80,7 +80,7 @@ void loop() {
     ledOffAt = 0;
   }
 
-  // --- Taster (entprellt) -> Strg (gehalten, solange gedrueckt) ---
+  // --- Button (debounced) -> Ctrl (held while pressed) ---
   bool raw = (digitalRead(PIN_SW) == LOW);
   if (raw != swLast) {
     swLast = raw;
