@@ -1,19 +1,19 @@
 # RotaryEncoderMousewheel_ch552
 
-Custom firmware for a cheap CH552G-based USB rotary encoder ("SmartKeyBoard_EC11", sold as a volume knob, see Amazon link below).
+Custom firmware for a cheap CH552G-based USB rotary encoder ("SmartKeyBoard_EC11", sold as a volume knob, see [Amazon link below](https://www.amazon.de/USB-Lautst%C3%A4rkeregler-Multimedia-Typ-C-Controller-Medienanpassung-7-Farben-RGB-Licht-Tastenkombinationen/dp/B0DQBYZVZH)).
 
-<p align="center"><img width="400" src="https://m.media-amazon.com/images/W/BW_MEDIAX_AVIF_MEASUREMENT_1306696-T4/images/I/618LQ0KQ7FL._AC_SL1500_.jpg" alt="USB Volume Knob" /></p>
+[<p align="center"><img width="400" src="https://m.media-amazon.com/images/W/BW_MEDIAX_AVIF_MEASUREMENT_1306696-T4/images/I/618LQ0KQ7FL._AC_SL1500_.jpg" alt="USB Volume Knob" /></p>](https://www.amazon.de/USB-Lautst%C3%A4rkeregler-Multimedia-Typ-C-Controller-Medienanpassung-7-Farben-RGB-Licht-Tastenkombinationen/dp/B0DQBYZVZH)
 
-It turns the knob into a **mouse wheel** and the encoder push button into **Ctrl**, so holding the button while turning gives Ctrl + wheel (zoom, fine control in Reaper, etc.). No driver or configuration is needed.
+It turns the knob into a **mousewheel** and the encoder push button into **Ctrl**, so holding the button while turning gives Ctrl + wheel (zoom, fine control in Reaper, etc.). No driver or configuration is needed.
 
-The idea behind this is to use it with the Reaper DAW for universal parameter control. Reaper already allows controlling it´s parameters and plugin parameters per mousewheel when hovering the mousecursor over it (needs to be enabled in preferences). Pushing the encoder button equals holding "left ctrl" for fine-grain control in Reaper. No controller needs to be configured in Reaper, it´s plug and play.
-> **Warning:** flashing overwrites the original firmware. I did not find a way to back it up or restore it. You do this at your own risk; no warranty (see LICENSE).
+The idea behind this is to use it with the Reaper DAW for universal parameter control. Reaper already allows controlling its parameters and plugin parameters per mousewheel when hovering the mousecursor over it (needs to be enabled in preferences). Pushing the encoder button equals holding "left ctrl" for fine-grain control in Reaper. No controller needs to be configured in Reaper, it´s plug and play.
+> **Warning:** flashing overwrites the original firmware. I did not find a way to back it up or restore it. You do this at your own risk; no warranty (see LICENSE). If flashing fails you can reflash, because bootloader is not affected.
 
 ## Behavior
 
 | Action | Result |
 |---|---|
-| Turn knob | Mouse wheel up / down (one step per detent) |
+| Turn knob | Mousewheel up / down (one step per detent with STEPS_PER_DETENT 4) |
 | Press knob (hold) | Left Ctrl held while pressed |
 | LED | Disabled in the firmware, prepared for custom use |
 
@@ -35,7 +35,7 @@ The Bourns has a 6mm axis with a flat side and takes standard potentiometer knob
 |---|---|---|---|
 | Encoder A | 7 | P3.1 | 31 |
 | Encoder B | 8 | P3.0 | 30 |
-| Encoder common (W) | 14 | GND | - |
+| Encoder common (C) | 14 | GND | - |
 | Encoder button (to GND) | 10 | P3.3 | 33 |
 | LED (VCC = pin 15, active low) | 11 | P3.4 | 34 |
 | Boot pad P6 | 16 / 12 | V33 / UDP (D+) | - |
@@ -46,12 +46,15 @@ The other CH552G pins are not used by this project. They likely connect to the 2
 
 ```
 RotaryEncoderMousewheel_ch552/
+  LICENSE
+  README.md
   RotaryEncoderMousewheel_ch552.ino
+  RotaryEncoderMousewheel_ch552.ino.hex
 ```
 
 The USB HID code (`src/userUsbHidKeyboardMouse`) is **not** included in this repository. You copy it from your own ch55xduino installation, see below.
 
-The `.ino` must live in a folder with the same name.
+The `.ino` must live in a folder with the same name. That works for git clone. For Zip download, rename folder.
 
 ## Build (Arduino IDE)
 
@@ -80,7 +83,7 @@ If you skip the USB setting, the sketch stops with a `#error`. If you skip step 
 
 1. Install **WCHISPStudio** (WCH's official tool, also called WCHISPTool) from https://www.wch.cn/products/CH552.html. Select chip series **CH55x**, chip **CH552**, load your `.hex`. Leave the configuration options at their defaults.
 2. Open the case. Unplug the knob.
-3. Enter the CH552 bootloader by connecting the P6 pad with a wire while plugging in the USB cable.
+3. Enter the CH552 bootloader by connecting (bridging) the two solder points of the P6 pad with a wire while plugging in the USB cable.
    - The P6 pad is wired to V33 (pin 16) and, through 10 kOhm, to D+ (pin 12). Bridging it pulls D+ high at power-up.
 4. The chip shows up in WCHISPStudio's device list (if not, try reconnecting a few times, it sometimes fails). It may **not** appear in Windows Device Manager or Zadig, and it can disappear again after a short time. Load the `.hex` first and click **Download** immediately.
 5. Unplug, plug in again without the bridge. The knob should now scroll the mousewheel and rotary push is "left ctrl".
@@ -105,9 +108,9 @@ To reduce scrolling per click on Windows without reflashing, set *Settings -> Bl
 
 ## Known issue: Windows compile error in the core
 
-With CH55xDuino 2026.07.10 and a recent Arduino CLI, compiling can fail with
+With CH55xDuino core 0.0.26 with MCS51Tools 2026.07.10 and a recent Arduino CLI, compiling can fail with
 `sdcc.sh: syntax error: unexpected "("`.
-The wrapper script uses a Bash array in the `re12` branch, but Windows runs it with plain `sh`. Replacing the array with a POSIX loop fixes it:
+The wrapper script uses a Bash array in the `re12` branch, but Windows runs it with plain `sh`. Replacing the array with a POSIX loop fixes it (replace the block that builds FILTERED_ARGS):
 
 ```sh
 N=$#
@@ -129,7 +132,7 @@ then use `"$@"` instead of `"${FILTERED_ARGS[@]}"`. The file is `...\Arduino15\p
 
 - https://hackaday.io/project/172143/instructions
 
-- https://www.amazon.de/USB-Lautst%C3%A4rkeregler-Multimedia-Typ-C-Controller-Medienanpassung-7-Farben-RGB-Licht-Tastenkombinationen/dp/B0DQBYZVZH/ref=dp_prsubs_d_sccl_3/258-9941439-7408910?pd_rd_w=1n1LF&content-id=amzn1.sym.f16eb515-347d-4f51-8281-c041e0040816&pf_rd_p=f16eb515-347d-4f51-8281-c041e0040816&pf_rd_r=DSEAGCEM69QQG6XYZ351&pd_rd_wg=t5JXW&pd_rd_r=54f8d289-5d0e-4a47-b37d-db57e750ca91&pd_rd_i=B0DQBYZVZH&psc=1
+- https://www.amazon.de/USB-Lautst%C3%A4rkeregler-Multimedia-Typ-C-Controller-Medienanpassung-7-Farben-RGB-Licht-Tastenkombinationen/dp/B0DQBYZVZH
 
 ## License
 
